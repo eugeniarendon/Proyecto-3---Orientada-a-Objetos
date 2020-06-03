@@ -126,12 +126,21 @@ bool Fecha :: operator<=(Fecha f){
   bool respuesta = false;
     if(aa <= f.getAnio()){
       respuesta = true;
-    }
-    if(aa == f.getAnio() && mm <= f.getMes()){
-      respuesta = true;
-    }
-    if(aa == f.getAnio() && mm == f.getMes() && dd <= f.getDia()){
-      respuesta = true;
+        if(aa == f.getAnio() && mm <= f.getMes()){
+          respuesta = true;
+            if(aa == f.getAnio() && mm == f.getMes() && dd <= f.getDia()){
+             respuesta = true;
+             }
+            else {
+              return false;
+            }
+        }
+        else{
+          return false;
+        }
+      }
+    else {
+      return false;
     }
   return respuesta;
 }

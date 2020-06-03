@@ -122,9 +122,6 @@ int Disco::cantidadDiasPrestamo(){
   return 2;
 }
 
-
-
-
 //clase derivada de la clase Material = DISCO
 class Software : public Material
 {

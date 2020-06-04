@@ -36,10 +36,10 @@ int main() {
   Fecha Fechas[60];
 
   //Variables
-  int idMaterial,numPag,duracion,version, idCliente;
+  int idMaterial,numPag,duracion,version, idCliente,cont2=1;
   char clave;
   string titulo,autor,genero,so;
-
+  
   //Hacer carga de archivos de Material 
   ifstream archivoEntrada;
   archivoEntrada.open("Material.txt");
@@ -75,7 +75,7 @@ int main() {
         ArregloSoftwares[software].setTitulo(titulo);
         ArregloSoftwares[software].setVersion(version);
         ArregloSoftwares[software].setSO(so);
-        ArregloMateriales[a] = &ArregloDiscos[software];
+        ArregloMateriales[a] = &ArregloSoftwares[software];
         software++;
     }
     a++;
@@ -92,22 +92,20 @@ int main() {
     ArregloReservaciones[b].setFechaReservacion(f[b]);
     ArregloReservaciones[b].setIdMaterial(idMaterial);
     ArregloReservaciones[b].setIdCliente(idCliente);
-
-    //pos = encuentraPosicion(idMaterial, ArregloMateriales);
-    //Fechas[b]=ArregloReservaciones[b].calculaFechaFinReserva(ArregloMateriales[pos]->cantidadDiasPrestamo());
+    //Nuevo arreglo c fechas finales
+    pos = encuentraPosicion(idMaterial, ArregloMateriales);
+    Fechas[b]=ArregloReservaciones[b].calculaFechaFinReserva(ArregloMateriales[pos]->cantidadDiasPrestamo());
     //cout << Fechas[b] << " " << b << endl;     
     b++;
   }
 archivoEntrada2.close();
 
-
-for(int x; x<b;x++){
+ /*for(int x;x<b;x++){
   cout << ArregloReservaciones[x].getFechaReservacion() << "      ";
   pos = encuentraPosicion(ArregloReservaciones[x].getIdMaterial(), ArregloMateriales);
-  //cout << ArregloMateriales[pos]->cantidadDiasPrestamo();
   Fechas[x]=ArregloReservaciones[x].calculaFechaFinReserva(ArregloMateriales[pos]->cantidadDiasPrestamo());
   cout << Fechas[x] << endl;
-}
+}*/
 
 //MENU
 int opcion;
@@ -143,7 +141,7 @@ cin>> opcion;
    {//Consultar la lista de reservaciones
       cout << "Lista de Reseraciones" << endl;
       for(int i=0;i<b;i++){
-        cout<<"[ #"<<i<<" ]" << endl;
+        cout<<"[ #"<<i+1<<" ]" << endl;
         cout << " ID Cliente: " << ArregloReservaciones[i].getIdCliente()<< endl;
         cout << " ID Material:" << ArregloReservaciones[i].getIdMaterial() << endl;
         cout << " Fecha de Reservación: " << ArregloReservaciones[i].getFechaReservacion() << endl;
@@ -162,9 +160,10 @@ cin>> opcion;
           d=checarID(idMaterial, ArregloReservaciones);
           if(d>=0){
             e=encuentraPosicion(ArregloReservaciones[d].getIdMaterial(), ArregloMateriales);
+            cout << " " << endl;
             cout << "El titulo del Material es: " << ArregloMateriales[e]->getTitulo() << endl;
             cout << "La fecha de reservacion inicial es: " << ArregloReservaciones[d].getFechaReservacion() << endl;
-            cout << "La fecha final de regreso: " << Fechas[d].getDia() << " / " << Fechas[d].getMes() << " / " << Fechas[d].getAnio() << endl;
+            cout << "La fecha final de regreso: " << Fechas[d].getDia() << " / " << Fechas[d].nombreMes() << " / " << Fechas[d].getAnio() << endl;
            }
           else{
           cout << "La clave no existe porfavor intente denuevo" << endl;
@@ -176,63 +175,104 @@ cin>> opcion;
     case 4:
     {//Consultar las reservaciones de una fecha dada
     int d,m,a;
+    char r;
+    do{
       do{
         cout << "Ingrese el dia:" << endl;
         cin >> d;
-      }while(d<0 && d>31);
+      }while(d<0 || d>31);
       do{
          cout << "Ingrese el mes:" << endl;
-         cin >> mm;
-      }while(mm<0 && mm>12);
+         cin >> m;
+      }while(m<0 || m>12);
       do{
          cout << "Ingrese el año:" << endl;
-         cin >> aa;
-      }while(aa<0 && aa>2020);      
-      Fecha case4(dd,mm,aa);
+         cin >> a;
+      }while(a<1980 || a>2020);      
+      Fecha case4(d,m,a);
+      int cont=0;
       for(int z;z<b;z++){
+        int cont=0;
         if((case4 <= Fechas[z])){
           int g=encuentraPosicion(ArregloReservaciones[z].getIdMaterial(), ArregloMateriales);
           cout << ArregloMateriales[g]->getTitulo() << " NO esta disponible" << endl;
           cout << "Id Cliente: " << ArregloReservaciones[z].getIdCliente() << endl;
         }
         else{
-          cout << " Libre " << endl;
+        cont++;
+        if(cont>=b){
+            cout << "Todo el material esta disponible" << endl;
+          }
         }
       } 
+    cout << "Desea checar otra fecha?" << endl;
+    cin>> r;
+    }while(r == tolower('s'));
     }
     break;
 
     case 5:
     {//Hacer una reservación
-    int d,m,a,r;
+    int d,m,a,r,t;
       do{
         cout << "Escriba la fecha del dia de hoy dd-mm-año:" << endl;
         cin>>d>>m>>a;
-      }while(31<d && 12<m && 2021<a);
+      }while((d<0 || d>31) && (m<0 || 12<m) && (a<1980 || 2021<a));
       do{
         cout<< "Escriba el ID del Cliente" << endl;
         cin>> idCliente;
         cout << "Escriba el ID del Material" << endl;
         cin>>idMaterial;
-        r=checarID(idMaterial, ArregloReservaciones);
-      }while(r<0);
+        t=encuentraPosicion(idMaterial, ArregloMateriales);
+        if(t==-1){
+          cout << "El id del Material no existe." << endl;
+        }
+      }while(t<0);
+      r=checarID(idMaterial, ArregloReservaciones);
       Fecha reserva(d,m,a);
-      for(int z;z<b;z++){
-        if((reserva <= Fechas[z])){
-          int g=encuentraPosicion(ArregloReservaciones[z].getIdMaterial(), ArregloMateriales);
+      //Si existe en arreglo reservaciones
+      if(r>0){
+        if(reserva <= Fechas[r]){
+          int g=encuentraPosicion(ArregloReservaciones[r].getIdMaterial(), ArregloMateriales);
           cout << ArregloMateriales[g]->getTitulo() << " NO esta disponible" << endl;
         }
-        else{
-          int g=encuentraPosicion(ArregloReservaciones[z].getIdMaterial(), ArregloMateriales);
-          cout << ArregloMateriales[g]->getTitulo() << "esta disponible. Há sido reservado." << endl;
+        else if(reserva > Fechas[r]){
+          int g=encuentraPosicion(ArregloReservaciones[r].getIdMaterial(), ArregloMateriales);
+          cout << ArregloMateriales[g]->getTitulo() << " esta disponible." << "Há sido reservado." << endl;
+          //Set info en Arreglo Reservaciones
+          ArregloReservaciones[b+cont2].setFechaReservacion(reserva);
+          ArregloReservaciones[b+cont2].setIdMaterial(idMaterial);
+          ArregloReservaciones[b+cont2].setIdCliente(idCliente);
+           cont2++;
         }
-      } 
+      }
+      //Si NO existe en arreglo reservaciones
+      if(r<0){
+        cout << ArregloMateriales[t]->getTitulo() << " esta disponible." << endl;
+        cout << "Há sido reservado." << endl;
+        ArregloReservaciones[b+cont2].setFechaReservacion(reserva);
+        ArregloReservaciones[b+cont2].setIdMaterial(idMaterial);
+        ArregloReservaciones[b+cont2].setIdCliente(idCliente);
+        cont2++;
+      }
     }
     break;
     
     case 6:
     {//actualizar la información del archivo
+       /*ofstream archivo;
+       archivo.open("Reserva.txt");
+        for(int a=0; a < cont2; a++){
+          archivo >>  ArregloReservaciones[b+a].getFechaReservacion() >> " " >> ArregloReservaciones[b+a].getIdMaterial()>> " " >> ArregloReservaciones[b+a].setIdCliente(idCliente) >> endl;
+           }
+        cout << " El archivo ha sido actualizado." << endl;*/
+     }
+    break;
 
+    default:{
+     if(opcion <0 || opcion >6){
+       cout << "Esta opcion no es valida!"<< endl;
+      }
     }
   }
 

@@ -42,6 +42,7 @@ Reserva::Reserva(int idM, int idC, Fecha fR){
 Fecha Reserva::calculaFechaFinReserva(int x){
   int nd = fechaReservacion.getDia() + x;
 
-  Fecha n(nd, fechaReservacion.getMes(),fechaReservacion.getAnio());
+  Fecha n;
+  n.setFecha(nd, fechaReservacion.getMes(),fechaReservacion.getAnio());
   return n;
 }

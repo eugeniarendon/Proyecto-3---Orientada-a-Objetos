@@ -73,10 +73,40 @@ string Fecha :: nombreMes(){
 }
 
 void Fecha::setFecha(int d, int m, int a){
-  dd=d;
-  mm=m;
-  aa=a;
-  //cout << dd << "/" << mm << "/" << aa << endl;
+    if(m%2 == 0){
+    //30 dias
+      if(d>30){
+        if(mm+1>12){
+        mm = 1;
+        aa = a+1;
+        }
+        mm = mm+1;
+        dd = d-30;
+      }
+      else if(d<30){
+        dd = d;
+        mm = m;
+        aa = a;
+      }
+    }
+    if(m%2 != 0){
+    //31 dias
+      if(d>31){
+        mm = m+1;
+        if(mm>12){
+        mm = 1;
+        aa = a+1;
+        }
+        dd = d-31;
+        aa = a;
+
+      }
+      if(d<31){
+        dd = d;
+        mm = m;
+        aa = a;
+      }
+    }
 }
 
 //sobrecarga de operadores
@@ -85,17 +115,18 @@ void Fecha::setFecha(int d, int m, int a){
 int Fecha :: operator+(int x){
   int dias = dd + x;
   //validar si mes es par o impar para ver cuantos dias tiene el mes
+  while(dias>0){
     if(mm%2 == 0){
     //30 dias
       if(dias>30){
         mm = mm+1;
         dd = 1;
       }
-      if(dias<30){
-        dd=dias;
+      else if(dias<30){
+        dd = dias;
       }
     }
-    else if(mm%2 == 1){
+    if(mm%2 == 1){
     //31 dias
       if(dias>31){
         mm = mm+1;
@@ -105,6 +136,7 @@ int Fecha :: operator+(int x){
         dd=dias;
       }
     }
+  }
 }
 
 //se usarán para realizar las consultas

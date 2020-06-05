@@ -1,4 +1,3 @@
-
 //Eugenia Rendon Guajado
 #include <iostream>
 #include <fstream>
@@ -207,6 +206,8 @@ cin>> opcion;
     case 5:
     {//Hacer una reservación
     int d,m,a,r,t;
+    char opc;
+    do{
       do{
         cout << "Escriba la fecha del dia de hoy dd-mm-año:" << endl;
         cin>>d>>m>>a;
@@ -238,6 +239,7 @@ cin>> opcion;
           ArregloReservaciones[b+cont2].setIdCliente(idCliente);
            cont2++;
         }
+    
       }
       //Si NO existe en arreglo reservaciones
       if(r<0){
@@ -249,6 +251,9 @@ cin>> opcion;
     
         cont2++;
       }
+      cout << "Desea hacer otra reservacion?" << endl;
+      cin>> opc;
+    }while(opc == tolower('s'));
     }
     break;
     

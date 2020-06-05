@@ -70,6 +70,7 @@ string Fecha :: nombreMes(){
         case 12 : return "Dic";
                   break;
     }
+  return 0;
 }
 
 void Fecha::setFecha(int d, int m, int a){
@@ -115,28 +116,35 @@ void Fecha::setFecha(int d, int m, int a){
 int Fecha :: operator+(int x){
   int dias = dd + x;
   //validar si mes es par o impar para ver cuantos dias tiene el mes
-  while(dias>0){
     if(mm%2 == 0){
     //30 dias
       if(dias>30){
+        if(mm+1>12){
+        mm = 1;
+        aa = aa+1;
+        }
         mm = mm+1;
-        dd = 1;
+        dd = dias-30;
       }
       else if(dias<30){
         dd = dias;
       }
     }
-    if(mm%2 == 1){
+    if(mm%2 != 0){
     //31 dias
       if(dias>31){
         mm = mm+1;
-        dd = 1;
+        if(mm>12){
+        mm = 1;
+        aa = aa+1;
+        }
+        dd = dias-31;
       }
       if(dias<31){
-        dd=dias;
+        dd = dias;
       }
     }
-  }
+  return 0;
 }
 
 //se usarán para realizar las consultas
@@ -144,12 +152,21 @@ bool Fecha :: operator>=(Fecha f){
   bool respuesta = false;
     if(aa >= f.getAnio()){
       respuesta = true;
-    }
-    if(aa == f.getAnio() && mm >= f.getMes()){
-      respuesta = true;
-    }
-    if(aa == f.getAnio() && mm == f.getMes() && dd >= f.getDia()){
-      respuesta = true;
+        if(aa == f.getAnio() && mm >= f.getMes()){
+          respuesta = true;
+            if(aa == f.getAnio() && mm == f.getMes() && dd >= f.getDia()){
+             respuesta = true;
+             }
+            else {
+              return false;
+            }
+        }
+        else{
+          return false;
+        }
+      }
+    else {
+      return false;
     }
   return respuesta;
 }
@@ -178,29 +195,47 @@ bool Fecha :: operator<=(Fecha f){
 }
 
 bool Fecha :: operator>(Fecha f){
-    bool respuesta = false;
+  bool respuesta = false;
     if(aa > f.getAnio()){
       respuesta = true;
-    }
-    if(aa == f.getAnio() && mm > f.getMes()){
-      respuesta = true;
-    }
-    if(aa == f.getAnio() && mm == f.getMes() && dd > f.getDia()){
-      respuesta = true;
+        if(aa == f.getAnio() && mm > f.getMes()){
+          respuesta = true;
+            if(aa == f.getAnio() && mm == f.getMes() && dd > f.getDia()){
+             respuesta = true;
+             }
+            else {
+              return false;
+            }
+        }
+        else{
+          return false;
+        }
+      }
+    else {
+      return false;
     }
   return respuesta;
 }
 
 bool Fecha :: operator<(Fecha f){
-    bool respuesta = false;
+  bool respuesta = false;
     if(aa < f.getAnio()){
       respuesta = true;
-    }
-    if(aa == f.getAnio() && mm < f.getMes()){
-      respuesta = true;
-    }
-    if(aa == f.getAnio() && mm == f.getMes() && dd < f.getDia()){
-      respuesta = true;
+        if(aa == f.getAnio() && mm < f.getMes()){
+          respuesta = true;
+            if(aa == f.getAnio() && mm == f.getMes() && dd < f.getDia()){
+             respuesta = true;
+             }
+            else {
+              return false;
+            }
+        }
+        else{
+          return false;
+        }
+      }
+    else {
+      return false;
     }
   return respuesta;
 }

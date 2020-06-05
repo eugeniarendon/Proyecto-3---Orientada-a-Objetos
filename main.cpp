@@ -36,7 +36,7 @@ int main() {
   Fecha Fechas[60];
 
   //Variables
-  int idMaterial,numPag,duracion,version, idCliente,cont2=1;
+  int idMaterial,numPag,duracion,version, idCliente,cont2=0;
   char clave;
   string titulo,autor,genero,so;
   
@@ -99,13 +99,6 @@ int main() {
     b++;
   }
 archivoEntrada2.close();
-
- /*for(int x;x<b;x++){
-  cout << ArregloReservaciones[x].getFechaReservacion() << "      ";
-  pos = encuentraPosicion(ArregloReservaciones[x].getIdMaterial(), ArregloMateriales);
-  Fechas[x]=ArregloReservaciones[x].calculaFechaFinReserva(ArregloMateriales[pos]->cantidadDiasPrestamo());
-  cout << Fechas[x] << endl;
-}*/
 
 //MENU
 int opcion;
@@ -191,16 +184,16 @@ cin>> opcion;
       }while(a<1980 || a>2020);      
       Fecha case4(d,m,a);
       int cont=0;
-      for(int z;z<b;z++){
+      for(int z=0;z<b;z++){
         int cont=0;
-        if((case4 <= Fechas[z])){
+        if(case4 <= Fechas[z]){
           int g=encuentraPosicion(ArregloReservaciones[z].getIdMaterial(), ArregloMateriales);
           cout << ArregloMateriales[g]->getTitulo() << " NO esta disponible" << endl;
           cout << "Id Cliente: " << ArregloReservaciones[z].getIdCliente() << endl;
         }
         else{
-        cont++;
-        if(cont>=b){
+          cont++;
+          if(cont==z){
             cout << "Todo el material esta disponible" << endl;
           }
         }
@@ -229,18 +222,18 @@ cin>> opcion;
         }
       }while(t<0);
       r=checarID(idMaterial, ArregloReservaciones);
-      Fecha reserva(d,m,a);
+      Fecha reserva1(d,m,a);
       //Si existe en arreglo reservaciones
       if(r>0){
-        if(reserva <= Fechas[r]){
+        if(reserva1 <= Fechas[r]){
           int g=encuentraPosicion(ArregloReservaciones[r].getIdMaterial(), ArregloMateriales);
           cout << ArregloMateriales[g]->getTitulo() << " NO esta disponible" << endl;
         }
-        else if(reserva > Fechas[r]){
+        else if(reserva1 > Fechas[r]){
           int g=encuentraPosicion(ArregloReservaciones[r].getIdMaterial(), ArregloMateriales);
           cout << ArregloMateriales[g]->getTitulo() << " esta disponible." << "Há sido reservado." << endl;
           //Set info en Arreglo Reservaciones
-          ArregloReservaciones[b+cont2].setFechaReservacion(reserva);
+          ArregloReservaciones[b+cont2].setFechaReservacion(reserva1);
           ArregloReservaciones[b+cont2].setIdMaterial(idMaterial);
           ArregloReservaciones[b+cont2].setIdCliente(idCliente);
            cont2++;
@@ -250,9 +243,10 @@ cin>> opcion;
       if(r<0){
         cout << ArregloMateriales[t]->getTitulo() << " esta disponible." << endl;
         cout << "Há sido reservado." << endl;
-        ArregloReservaciones[b+cont2].setFechaReservacion(reserva);
+        ArregloReservaciones[b+cont2].setFechaReservacion(reserva1);
         ArregloReservaciones[b+cont2].setIdMaterial(idMaterial);
         ArregloReservaciones[b+cont2].setIdCliente(idCliente);
+    
         cont2++;
       }
     }
@@ -260,12 +254,18 @@ cin>> opcion;
     
     case 6:
     {//actualizar la información del archivo
-       /*ofstream archivo;
-       archivo.open("Reserva.txt");
-        for(int a=0; a < cont2; a++){
-          archivo >>  ArregloReservaciones[b+a].getFechaReservacion() >> " " >> ArregloReservaciones[b+a].getIdMaterial()>> " " >> ArregloReservaciones[b+a].setIdCliente(idCliente) >> endl;
-           }
-        cout << " El archivo ha sido actualizado." << endl;*/
+      ofstream archivo;
+      archivo.open("Reserva.txt", ios::app);
+      int total= b + cont2;
+        for(int a=b; a < total; a++){
+          int idM = ArregloReservaciones[a].getIdMaterial();
+          Fecha Frn = ArregloReservaciones[a].getFechaReservacion();
+          int idC = ArregloReservaciones[a].getIdCliente();
+          archivo << Frn.getDia() << " "<<Frn.getMes()<< " "<< Frn.getAnio() << " " << idM << " " << idC<< endl;
+          }
+      archivo.close();
+        cout << "El archivo ha sido actualizado.Se han hecho " << cont2 << " registros nuevos" << endl;
+
      }
     break;
 
@@ -276,7 +276,7 @@ cin>> opcion;
     }
   }
 
-}while(opcion!=7);
+}while(opcion!=6);
 
 
 }
